@@ -51,7 +51,7 @@ const updateContact = async (req, res, next) => {
     }
 
     if (!Object.keys(req.body).length) {
-      throw HttpError(404, "missing field");
+      throw HttpError(400, "missing field");
     }
 
     const { contactId } = req.params;

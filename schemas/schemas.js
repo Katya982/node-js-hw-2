@@ -1,16 +1,22 @@
 import Joi from "joi";
 
-const contactAddSchema = Joi.object({
-  name: Joi.string().required().messages({
-    "any.required": `"title" must be exist`,
-  }),
-  email: Joi.string().required(),
+const addSchema = Joi.object({
+  name: Joi.string().required(),
+  email: Joi.string().email().required(),
   phone: Joi.string().required(),
 });
-const contactUpDateSchema = Joi.object({
+
+const upDateShema = Joi.object({
   name: Joi.string(),
-  email: Joi.string(),
+  email: Joi.string().email(),
   phone: Joi.string(),
 });
 
-export { contactAddSchema, contactUpDateSchema };
+const customMessages = {
+  "string.email": `Enter correct email`,
+  "any.required": "missing required {#label} field",
+};
+
+export const contactAddSchema = addSchema.messages(customMessages);
+export const contactUpDateSchema = upDateShema.messages(customMessages);
+

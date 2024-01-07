@@ -1,7 +1,7 @@
 import { Schema, model } from "mongoose";
 import Joi from "joi";
 
-// import {handleSaveError, addUpdateSettings} from "./hooks.js";
+import {handleSaveError, addUpdateSettings} from "./hooks.js";
 
 const contactsSchema = new Schema({
     name: {
@@ -28,33 +28,33 @@ contactsSchema.post("save", (error, data, next) => {
     next();
 });
 
-// movieSchema.post("save", handleSaveError);
+contactsSchema.post("save", handleSaveError);
 
-// movieSchema.pre("findOneAndUpdate", addUpdateSettings);
+contactsSchema.pre("findOneAndUpdate", addUpdateSettings);
 
-// movieSchema.post("findOneAndUpdate", handleSaveError);
+contactsSchema.post("findOneAndUpdate", handleSaveError);
 
-// export const contactAddSchema = Joi.object({
-//     title: Joi.string().required().messages({
-//         "any.required": `"title" must be exist`
-//     }),
-//     director: Joi.string().required(),
-//     favorite: Joi.boolean(),
-//     genre: Joi.string().valid(...genreList).required(),
-//     releaseYear: Joi.string().pattern(releaseYearRegexp).required(),
-// })
+export const contactAddSchema = Joi.object({
+    title: Joi.string().required().messages({
+        "any.required": `"title" must be exist`
+    }),
+    director: Joi.string().required(),
+    favorite: Joi.boolean(),
+    genre: Joi.string().required(),
+    releaseYear: Joi.string().required(),
+})
 
-// export const contactUpdateSchema = Joi.object({
-//     title: Joi.string(),
-//     director: Joi.string(),
-//     favorite: Joi.boolean(),
-//     genre: Joi.string().valid(...genreList),
-//     releaseYear: Joi.string().pattern(releaseYearRegexp),
-// })
+export const contactUpdateSchema = Joi.object({
+    title: Joi.string(),
+    director: Joi.string(),
+    favorite: Joi.boolean(),
+    genre: Joi.string(),
+    releaseYear: Joi.string(),
+})
 
-// export const movieUpdateFavoriteSchema = Joi.object({
-//     favorite: Joi.boolean().required()
-// });
+export const contactUpdateFavoriteSchema = Joi.object({
+    favorite: Joi.boolean().required()
+});
 
 const Contacts = model("contacts", contactsSchema);
 

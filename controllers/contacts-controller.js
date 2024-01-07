@@ -25,7 +25,7 @@ const addContact = async (req, res) => {
   res.status(201).json(result)
 };
 
-const updateById = async (req, res) => {
+const updateContact = async (req, res) => {
   const { contactId } = req.params;
   const result = await Contact.findByIdAndUpdate(contactId, req.body);
   if (!result) {
@@ -35,7 +35,7 @@ const updateById = async (req, res) => {
   res.json(result);
 };
 
-const deleteById = async (req, res) => {
+const deleteContact = async (req, res) => {
   const { contactId } = req.params;
   const result = await Contact.findByIdAndDelete(contactId);
   if (!result) {
@@ -48,12 +48,20 @@ const deleteById = async (req, res) => {
 };
 
 export default {
-    getAll: ctrlWrapper(getAll),
-    getById: ctrlWrapper(getById),
-    add: ctrlWrapper(addContact),
-    updateById: ctrlWrapper(updateById),
-    deleteById: ctrlWrapper(deleteById),
-}
+  getAll: ctrlWrapper(getAll),
+  getById: ctrlWrapper(getById),
+  add: ctrlWrapper(addContact),
+  updateById: ctrlWrapper(updateContact),
+  deleteById: ctrlWrapper(deleteContact),
+};
+
+// export default {
+//     getAll: ctrlWrapper(getAll),
+//     getById: ctrlWrapper(getById),
+//     add: ctrlWrapper(addContact),
+//     updateById: ctrlWrapper(updateContact),
+//     deleteById: ctrlWrapper(deleteContact),
+// }
 
 // const getAll = async (req, res, next) => {
 //   try {

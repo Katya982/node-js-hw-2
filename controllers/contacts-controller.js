@@ -1,50 +1,95 @@
 import Contact from '../models/Contact.js';
 import { HttpError } from '../helpers/index.js';
-
 import { ctrlWrapper } from "../decorators/index.js";
 
-const getAll = async (req, res) => {
-    const result = await Contact.find({}, "-createdAt -updatedAt");
+import {
+  contactAddSchema,
+  contactUpdateFavoriteSchema,
+  contactUpdateSchema,
+} from "../models/Contact.js";
 
-    res.json(result);
-}
-
-const getById = async (req, res) => {
-  const { contactId } = req.params;
-  const result = await Contact.findById(contactId);
-  if (!result) {
-    throw HttpError(404, `Contact with id=${contactId} not found`);
+const getAll = async (req, res, next) => {
+  try {
+    const data = await Contact.find();
+    res.json(data);
+  } catch (error) {
+    next(error);
   }
-
-  res.json(result);
 };
 
-const addContact = async (req, res) => {
-  const result = await Contact.create(req.body);
-
-  res.status(201).json(result)
+const getById = async (req, res, next) => {
+  try {
+    const { id } = req.params;
+    const data = await Contact.findById(id);
+    if (data === null) {
+      throw HttpError(404);
+    }
+    res.json(data);
+  } catch (error) {
+    next(error);
+  }
 };
 
-const updateContact = async (req, res) => {
-  const { contactId } = req.params;
-  const result = await Contact.findByIdAndUpdate(contactId, req.body);
-  if (!result) {
-    throw HttpError(404, `Contact with id=${contactId} not found`);
+const addContact = async (req, res, next) => {
+  try {
+    const { error } = contactAddSchema.validate(req.body);
+    if (error) {
+      throw HttpError(400, error.message);
+    }
+    const data = await Contact.create(req.body);
+    res.status(201).json(data);
+  } catch (error) {
+    next(error);
   }
-
-  res.json(result);
 };
 
-const deleteContact = async (req, res) => {
-  const { contactId } = req.params;
-  const result = await Contact.findByIdAndDelete(contactId);
-  if (!result) {
-    throw HttpError(404, `Contact with id=${contactId} not found`);
+const updateContact = async (req, res, next) => {
+  try {
+    const { error } = contactUpdateSchema.validate(req.body);
+    if (error) {
+      throw HttpError(400, error.message);
+    }
+    const { id } = req.params;
+    const data = await Contact.findByIdAndUpdate(id, req.body);
+    if (data === null) {
+      throw HttpError(404);
+    }
+    res.json(data);
+  } catch (error) {
+    next(error);
   }
+};
 
-  res.json({
-    message: "Delete success"
-  })
+const updateStatusContact = async (req, res, next) => {
+  try {
+    const { error } = contactUpdateFavoriteSchema.validate(req.body);
+    if (error) {
+      throw HttpError(400, error.message);
+    }
+    const { id } = req.params;
+    const data = await Contact.findByIdAndUpdate(id, req.body);
+    if (data === null) {
+      throw HttpError(404);
+    }
+    res.json(data);
+  } catch (error) {
+    next(error);
+  }
+};
+
+const deleteContact = async (req, res, next) => {
+  try {
+    const { id } = req.params;
+    const data = await Contact.findByIdAndDelete(id);
+    if (data === null) {
+      throw HttpError(404);
+    }
+    res.json({
+      message: "contact deleted",
+    });
+  } catch (error) {
+    next(error);
+  }
 };
 
 export default {
@@ -53,4 +98,5 @@ export default {
   add: ctrlWrapper(addContact),
   updateById: ctrlWrapper(updateContact),
   deleteById: ctrlWrapper(deleteContact),
+  updateStatusContact: ctrlWrapper(updateStatusContact)
 };

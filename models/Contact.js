@@ -1,7 +1,8 @@
-import { Schema, model } from "mongoose";
+import mongoose,  { Schema, model} from "mongoose";
 import Joi from "joi";
-
 import { handleSaveError, addUpdateSettings } from "./hooks.js";
+
+mongoose.Schema.Types.String.cast(false);
 
 const contactsSchema = new Schema({
     name: {
@@ -21,7 +22,10 @@ const contactsSchema = new Schema({
       type: Boolean,
       default: false,
     },
-}, {versionKey: false, timestamps: true});
+}, {
+    versionKey: false,
+    timestamps: true
+});
 
 contactsSchema.post("save", (error, data, next) => {
     error.status = 400;
@@ -34,28 +38,32 @@ contactsSchema.pre("findOneAndUpdate", addUpdateSettings);
 
 contactsSchema.post("findOneAndUpdate", handleSaveError);
 
+
 export const contactAddSchema = Joi.object({
-    title: Joi.string().required().messages({
-        "any.required": `"title" must be exist`
-    }),
-    director: Joi.string().required(),
-    favorite: Joi.boolean(),
-    genre: Joi.string().required(),
-    releaseYear: Joi.string().required(),
-})
-
-export const contactUpdateSchema = Joi.object({
-    title: Joi.string(),
-    director: Joi.string(),
-    favorite: Joi.boolean(),
-    genre: Joi.string(),
-    releaseYear: Joi.string(),
-})
-
-export const contactUpdateFavoriteSchema = Joi.object({
-    favorite: Joi.boolean().required()
+  name: Joi.string().required().messages({
+    "any.required": "missing required name field",
+  }),
+  email: Joi.string().required().messages({
+    "any.required": "missing required email field",
+  }),
+  phone: Joi.string().required().messages({
+    "any.required": "missing required phone field",
+  }),
+  favorite: Joi.boolean(),
 });
 
+export const contactUpdateSchema = Joi.object({
+    name: Joi.string(),
+    email: Joi.string(),
+    phone: Joi.string(),
+    favorite: Joi.boolean(),
+});
+
+export const contactUpdateFavoriteSchema = Joi.object({
+  favorite: Joi.boolean().required().messages({
+    "any.required": "missing field favorite",
+  }),
+});
 const Contacts = model("contacts", contactsSchema);
 
 export default Contacts;

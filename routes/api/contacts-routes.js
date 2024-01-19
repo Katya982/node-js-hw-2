@@ -2,6 +2,9 @@ import express from "express";
 import contactsController from '../../controllers/contacts-controller.js';
 import {isEmptyBody, isValidId} from "../../middlewares/index.js";
 const contactsRouter = express.Router();
+import authenticate from "../../middlewares/authenticate.js";
+
+contactsRouter.use(authenticate);
 
 contactsRouter.get("/", contactsController.getAll);
 

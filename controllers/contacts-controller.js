@@ -29,7 +29,8 @@ const getById = async (req, res, next) => {
 
 const addContact = async (req, res, next) => {
   const { name, email, phone } = req.body;
-  const { _id: owner } = req.user;  
+  const { _id: owner } = req.user;
+  
   try {
     const { error } = contactAddSchema.validate(req.body);
     if (error) {

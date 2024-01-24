@@ -102,8 +102,10 @@ const updateAvatar = async (req, res, next) => {
     const image = await jimp.read(oldPath);
     await image.resize(250, 250);
     await image.writeAsync(newPath);
+    
+    await fs.unlink(oldPath);
+
     const avatarURL = path.join("avatars", filename);
-    fs.rename(oldPath);
     const result = await User.findOneAndUpdate({ _id }, { avatarURL });
 
     res.status(200).json({ avatarURL });
@@ -111,5 +113,6 @@ const updateAvatar = async (req, res, next) => {
     next(error);
   }
 };
+
 
 export default { signup, signin, getCurrent, signout, updateAvatar };
